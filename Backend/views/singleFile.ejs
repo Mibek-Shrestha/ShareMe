@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>View Image</title>
+  </head>
+  <body>
+    <h3><%- file %></h3>
+    <h3><%- file.filename %></h3>
+    <h3><%- file.category %></h3>
+    <!-- <img src="/<%- file.filename %>" alt="" /> -->
+    <!-- <img src="/R.png" alt="" /> -->
+
+    <iframe
+      src="/<%- file.filename %>"
+      frameborder="0"
+      alt="Open in full screen"
+    >
+    </iframe>
+    <p>File size: <%- sizeInMB %> MB</p>
+    <a href="/<%- file.filename %>" download>
+      <button>Download</button>
+    </a>
+  </body>
+</html>

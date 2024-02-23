@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload</title>
+  </head>
+  <body>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label for="category">Category:</label>
+      <select id="category" name="category" onchange="showInputField(this)">
+        <option value="category1">Category 1</option>
+        <option value="category2">Category 2</option>
+        <option value="other">Other</option>
+        <!-- Add more categories as needed -->
+      </select>
+
+      <div id="otherCategory" style="display: none">
+        <label for="other">Other:</label>
+        <input type="text" id="other" name="other" />
+      </div>
+      <br />
+      <label for="file">Upload a file:</label>
+      <input type="file" id="file" name="file" accept=".pdf, .doc, .docx" />
+      <br />
+      <input type="submit" value="Submit" />
+    </form>
+    <script>
+      function showInputField(select) {
+        const otherCategory = document.getElementById("otherCategory");
+        if (select.value === "other") {
+          otherCategory.style.display = "block";
+        } else {
+          otherCategory.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
