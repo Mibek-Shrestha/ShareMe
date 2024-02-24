@@ -36,8 +36,15 @@ const upload = multer({
 
 
 router.get('/', noteController.home);
-router.get('/login', noteController.login);
-router.get('/signUp', noteController.signUp);
+
+// // // // // //
+//
+// multiple same routes 
+//
+// router.get('/login', noteController.login);
+// router.get('/signUp', noteController.signUp);
+// // // // // //
+
 router.post('/register', noteController.register);
 router.post('/signup', noteController.registered);
 router.post('/login', noteController.postLogin);
