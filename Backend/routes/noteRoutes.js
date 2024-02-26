@@ -5,8 +5,8 @@ const multer = require('multer');
 const noteController = require('../controllers/note');
 
 const router = express.Router();
+const { requireAuth } = require('../middleware/token');
 
-// const upload = multer({ dest: 'uploads/' });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -29,7 +29,6 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true);
     }
-
     cb(
       'Error: File upload only supports the following filetypes - ' + filetypes
     );
@@ -37,20 +36,11 @@ const upload = multer({
 });
 
 router.get('/', noteController.home);
-
-// // // // // //
-//
-// multiple same routes
-//
-// router.get('/login', noteController.login);
-// router.get('/signUp', noteController.signUp);
-// // // // // //
-
 router.post('/register', noteController.register);
 router.post('/signup', noteController.registered);
 router.post('/login', noteController.postLogin);
 router.post('/upload', upload.single('file'), noteController.upload);
-router.get('/getAllFiles/', noteController.getAllFiles);
+router.get('/getAllFiles/', requireAuth, noteController.getAllFiles);
 router.get('/files/:id', noteController.getFile);
-
+router.post('/logout', noteController.logout);
 module.exports = router;

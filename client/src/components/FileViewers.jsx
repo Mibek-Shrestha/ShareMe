@@ -1,37 +1,39 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const FileViewers = () => {
-    const [files, setFiles] = useState([]);
+    const [file, setFile] = useState(null);
 
     useEffect(() => {
-        const fetchFiles = async () => {
+        const fetchFile = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/getAllFiles');
-                setFiles(response.data);
+                const response = await axios.get('http://localhost:8000/api/files/65db5a7f28165c78a1d05a69');
+                setFile(response.data);
             } catch (error) {
-                console.error('Error fetching files:', error);
+                console.error('Error fetching file:', error);
             }
         };
 
-        fetchFiles();
+        fetchFile();
     }, []);
 
     return (
         <div>
-            <h1>List of Files</h1>
-            {files.map((file, index) => (
-                <div key={index}>
-                    <h2>File {index + 1}</h2>
-                    <iframe
-                        src={`/api/file/${file._id}`}
-                        width="10%"
-                        height="500px"
-                        style={{ border: 'none' }}
-                        title={`File ${index + 1}`}
-                    />
+            <h1>File Viewer</h1>
+            {file && (
+                <div>
+                    <h2>{file.filename}</h2>
+                    <Document
+                        file={`http://localhost:8000/` + file.filename}
+                    >
+                        <Page pageNumber={1} renderTextLayer={false} />
+                    </Document>
                 </div>
-            ))}
+            )}
         </div>
     );
 };

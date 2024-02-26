@@ -40,8 +40,8 @@ const FileUpload = () => {
                         Category:
                     </label>
                     <select id="category" name="category" value={category} onChange={handleCategoryChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <option value="category1">React</option>
-                        <option value="category2">Java</option>
+                        <option value="React">React</option>
+                        <option value="Java">Java</option>
                         <option value="other">Other</option>
                     </select>
                 </div>

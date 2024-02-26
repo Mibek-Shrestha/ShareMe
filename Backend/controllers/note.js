@@ -3,12 +3,12 @@ const File = require('../models/upload');
 const bcrypt = require('bcryptjs');
 const Upload = require('../models/upload');
 const OTP = require('../models/otp');
-const {v4: uuidv4} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
-  return jwt.sign({id}, 'your-secret-key', {
+  return jwt.sign({ id }, 'your-secret-key', {
     expiresIn: maxAge,
   });
 };
@@ -38,9 +38,9 @@ const register = (req, res) => {
 const registered = async (req, res) => {
   try {
     // Check if user already exists
-    let user = await Register.findOne({email: req.body.email});
+    let user = await Register.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).json({msg: 'User already exists'});
+      return res.status(400).json({ msg: 'User already exists' });
     }
 
     // Create new user
@@ -71,7 +71,7 @@ const postLogin = async (req, res) => {
     return res.status(400).send('Missing email or OTP');
   }
 
-  let user = await OTP.findOne({email});
+  let user = await OTP.findOne({ email });
   if (!user) {
     return res.status(404).send('User not found');
   }
@@ -87,12 +87,12 @@ const postLogin = async (req, res) => {
 
   const token = createToken(user._id);
 
-  res.cookie('notesharing', JSON.stringify({token}), {
+  res.cookie('notesharing', JSON.stringify({ token, email: user.email }), {
     maxAge: maxAge * 1000,
     path: '/',
     secure: false,
   });
-  return res.status(201).json({user: user._id, message: 'OTP verified'});
+  return res.status(201).json({ user: user._id, message: 'OTP verified' });
 };
 
 const upload = async (req, res) => {
@@ -123,13 +123,14 @@ const upload = async (req, res) => {
 const getFile = async (req, res) => {
   try {
     const file = await Upload.findById(req.params.id);
-    var bytes = file.size;
-    var megabytes = bytes / 1024 / 1024;
+
+    // var megabytes = bytes / 1024 / 1024;
 
     if (!file) {
       return res.status(404).send('File not found');
     }
-    res.render('singleFile', {file: file, sizeInMB: megabytes.toFixed(2)});
+    res.send(file);
+    // res.render('singleFile', { file: file, sizeInMB: megabytes.toFixed(2) });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
@@ -141,15 +142,22 @@ const getAllFiles = async (req, res) => {
     if (!pdfs || pdfs.length === 0) {
       return res.status(404).send('No PDF files found');
     }
-    // If you want to send multiple PDFs, you may need to zip them or use another method to send multiple files
-    // Here, I'm sending a response with an array of PDF IDs, assuming you'll retrieve them one by one in the frontend
-    res.status(200).json(pdfs.map((pdf) => pdf._id));
+    // res.status(200).json(pdfs.map((pdf) => pdf._id));
+    res.send(pdfs)
   } catch (error) {
     console.error('Error retrieving PDF files:', error);
     res.status(500).send('Internal Server Error');
   }
 };
 
+const logout = (req, res) => {
+  res.clearCookie('notesharing', {
+    path: '/',
+    secure: true,
+    sameSite: 'None',
+  });
+  res.status(200).send({ message: 'Logged out' });
+};
 module.exports = {
   register,
   home,
@@ -160,4 +168,5 @@ module.exports = {
   upload,
   getFile,
   getAllFiles,
+  logout,
 };

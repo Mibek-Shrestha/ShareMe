@@ -1,9 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
+import Cookies from 'js-cookie';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [email, setEmail] = useState(null);
 
+    useEffect(() => {
+        const cookie = Cookies.get('notesharing');
+        if (cookie) {
+            const { email } = JSON.parse(cookie);
+            setEmail(email);
+        }
+    }, []);
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
@@ -23,9 +31,17 @@ const Navbar = () => {
                     <Link to="/" className=" text-xl block mt-4 lg:inline-block lg:mt-0 text-teal-50 hover:text-white mr-10">
                         Home
                     </Link>
-                    <Link to="/signup" className="text-xl  block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
-                        Signup
+                    {email ? (
+                        <span className="text-xl block mt-4 lg:inline-block lg:mt-0 text-teal-200">Welcome,{email}</span>
+                    ) : (
+                        <Link to="/logout" className="text-xl block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
+                            Logout
+                        </Link>
+                    )}
+                    <Link to="/signup" className="text-xl ml-5 block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
+                        Logout
                     </Link>
+
                 </div>
             </div>
         </nav>

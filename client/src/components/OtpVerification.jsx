@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {useState, useRef} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function OtpVerification() {
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -36,17 +36,15 @@ function OtpVerification() {
           otp: otpString,
         },
         {
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         }
       )
       .then((response) => {
-        if (response.status === 200) {
-          // If the OTP verification was successful, navigate to the new page
+        if (response.status === 200 || response.status === 201) {
           navigate('/userDashboard');
         } else {
-          console.error('Login failed:', response.data);
-          // Display an error message to the user or handle it appropriately
+          alert('Invalid OTP');
         }
       })
       .catch((error) => {
